@@ -1,212 +1,310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Portfolio</title>
-    <link href="https://cdn.jsdelivr.net/npm/nerd-fonts@1.2.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #fff;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artemii Fourman – DevOps & Linux Infrastructure Engineer</title>
+<meta name="description" content="Artemii Fourman: Linux infrastructure, operational automation and monitoring, with personal CI/CD and Kubernetes projects.">
+<meta property="og:title" content="Artemii Fourman – DevOps Engineer">
+<meta property="og:description" content="Linux infrastructure, automation and monitoring. Personal projects in CI/CD, Docker and Kubernetes.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<style>
+:root{
+  --bg:#1f2124; --surface:#2a2d31; --surface2:#33373c; --line:#3d4248;
+  --text:#e6e8ea; --muted:#9aa1a9; --accent:#e3a857; --ok:#5fcf80;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#f4f5f6; --surface:#ffffff; --surface2:#eceef0; --line:#d5d9dd;
+  --text:#1f2328; --muted:#59626b; --accent:#a35c00; --ok:#1a7f3c;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
 
-        header {
-            text-align: center;
-            padding: 20px;
-            background-color: #1e1e1e;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
+/* header + tabs */
+header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
+.brand{font-weight:700;letter-spacing:-.01em;text-decoration:none}
+nav[role=tablist]{position:relative;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav[role=tablist]::-webkit-scrollbar{display:none}
+[role=tab]{background:none;border:0;color:var(--muted);font:inherit;font-size:.95rem;padding:8px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:color .2s,background .2s}
+[role=tab]:hover{color:var(--text);background:var(--surface)}
+[role=tab][aria-selected=true]{color:var(--text);background:var(--surface2);box-shadow:inset 0 -2px 0 var(--accent)}
+.icon-btn{background:var(--surface);border:1px solid var(--line);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1rem;flex:none}
+.icon-btn:hover{border-color:var(--accent)}
 
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
+/* hero */
+.hero{padding:56px 0 40px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+h1{font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.03em;margin:0 0 8px}
+.role{font-size:1.2rem;color:var(--accent);margin:0 0 16px;font-weight:600}
+.lead{color:var(--muted);max-width:52ch;margin:0 0 24px}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;padding:10px 18px;border-radius:8px;border:1px solid var(--line);background:var(--surface);text-decoration:none;font-weight:600;font-size:.95rem;cursor:pointer;color:var(--text);font-family:inherit;transition:border-color .2s,transform .2s}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#1b1a17}
+:root[data-theme="light"] .btn.primary{color:#fff}
 
-        header p {
-            margin: 5px 0 0;
-            font-size: 1rem;
-            color: #ccc;
-        }
+/* pipeline: the one orchestrated page-load moment */
+.pipe{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;font-family:var(--mono);font-size:.85rem}
+.pipe-h{display:flex;justify-content:space-between;color:var(--muted);margin-bottom:12px}
+.stage{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line);transition:color .3s}
+.pipe-h+.stage{border-top:0}
+.dot{width:18px;height:18px;flex:none;border-radius:50%;border:2px solid var(--ok);background:var(--ok);color:var(--bg);display:grid;place-items:center;font-size:.7rem}
+.stage span:last-child{margin-left:auto}
+.pipe-f{margin-top:12px;color:var(--ok)}
+.pipe.js .stage{color:var(--muted)}
+.pipe.js .stage .dot{border-color:var(--line);background:transparent;color:transparent}
+.pipe.js .stage .t{visibility:hidden}
+.pipe.js .stage.run{color:var(--text)}
+.pipe.js .stage.run .dot{border-color:var(--accent);border-top-color:transparent;animation:spin .8s linear infinite}
+.pipe.js .stage.done{color:var(--text)}
+.pipe.js .stage.done .dot{border-color:var(--ok);background:var(--ok);color:var(--bg)}
+.pipe.js .stage.done .t{visibility:visible}
+.pipe.js .pipe-f{opacity:0;transition:opacity .3s}
+.pipe.js.ok .pipe-f{opacity:1}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-        .slider {
-            position: relative;
-            max-width: 90%;
-            height: 600px;
-            margin: 20px auto;
-            overflow: hidden;
-            border: 2px solid #333;
-            border-radius: 10px;
-        }
+/* panels */
+main{padding-bottom:64px}
+[role=tabpanel]{display:none;padding-top:24px}
+[role=tabpanel].active{display:block;animation:swap .3s ease}
+@keyframes swap{from{opacity:0;transform:translateY(6px)}}
+h2{font-size:1.5rem;letter-spacing:-.02em;margin:0 0 20px}
+h3{font-size:1.05rem;margin:0 0 4px}
+.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card p{margin:6px 0 12px;color:var(--muted);font-size:.95rem}
 
-        .slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
+/* about */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:20px}
+.facts div{border-left:3px solid var(--accent);padding-left:12px}
+.facts b{display:block}
 
-        .slide {
-            width: 100%;
-            flex-shrink: 0;
-            text-align: center;
-            background: #1e1e1e;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+/* skills */
+.skill-group{margin-bottom:24px}
+.skill-group h3{margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.9rem}
+.chip.learn{border-style:dashed;color:var(--muted)}
 
-        .slide img {
-            max-width: 80%;
-            height: auto;
-            margin-bottom: 20px;
-        }
+/* timeline: genuinely a sequence */
+.timeline{list-style:none;margin:0;padding:0 0 0 22px;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 28px 18px}
+.timeline li::before{content:"";position:absolute;left:-30px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
+.when{font-size:.85rem;color:var(--muted)}
+.timeline ul{margin:8px 0 0;padding-left:18px;color:var(--muted)}
+.timeline li li{padding:0;margin:2px 0}
+.timeline li li::before{display:none}
 
-        .slide h2 {
-            margin: 10px 0;
-        }
+/* projects */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.tags span{font-family:var(--mono);font-size:.78rem;background:var(--surface2);padding:2px 8px;border-radius:6px}
+.card a.link{color:var(--accent);font-weight:600;text-decoration:none}
+.card a.link:hover{text-decoration:underline}
+a.card{display:block;text-decoration:none;transition:border-color .2s,transform .2s}
 
-        .slide i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
+/* contact */
+.contact-list{display:grid;gap:12px;max-width:520px}
+.contact-list a,.contact-list button{display:flex;justify-content:space-between;align-items:center;text-align:left;width:100%}
 
-        .slider-controls {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-        }
+footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-size:.9rem}
 
-        .slider-controls button {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: none;
-            background-color: #666;
-            cursor: pointer;
-        }
-
-        .slider-controls button.active {
-            background-color: #007bff;
-        }
-
-        .footer {
-            padding: 20px;
-            text-align: center;
-            background-color: #1e1e1e;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .footer p {
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-
-        .footer button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            background-color: #007bff;
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .footer button:hover {
-            background-color: #0056b3;
-        }
-
-        @media (max-width: 768px) {
-            .slider {
-                height: auto;
-            }
-
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            header p {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+@media(max-width:760px){
+  .brand{display:none}
+  .page{display:flex;flex-direction:column}
+  .hero{display:contents}
+  .hero>div:first-child{order:1;padding:28px 0 8px}
+  main{order:2;padding-bottom:32px}
+  .pipe{order:3;margin-bottom:40px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition:none!important}
+}
+</style>
 </head>
 <body>
 
 <header>
-    <h1>Artemii Fourman - DevOps Specialist</h1>
-    <p>Professional Portfolio</p>
+  <div class="wrap bar">
+    <a class="brand" href="#about">Artemii Fourman</a>
+    <nav role="tablist" aria-label="Portfolio sections">
+      <button role="tab" id="t-about" aria-controls="about" aria-selected="true">About</button>
+      <button role="tab" id="t-skills" aria-controls="skills" aria-selected="false" tabindex="-1">Skills</button>
+      <button role="tab" id="t-experience" aria-controls="experience" aria-selected="false" tabindex="-1">Experience</button>
+      <button role="tab" id="t-projects" aria-controls="projects" aria-selected="false" tabindex="-1">Projects</button>
+      <button role="tab" id="t-contact" aria-controls="contact" aria-selected="false" tabindex="-1">Contact</button>
+    </nav>
+    <button class="icon-btn" id="theme" aria-label="Switch to light theme" title="Toggle theme">☾</button>
+  </div>
 </header>
 
-<div class="slider">
-    <div class="slides" id="slides">
-        <div class="slide">
-            <i class="fas fa-code-branch"></i>
-            <h2>Git</h2>
-            <p>Version control system used for tracking changes in source code.</p>
-        </div>
-        <div class="slide">
-            <i class="fas fa-box"></i>
-            <h2>Docker</h2>
-            <p>Platform for developing, shipping, and running applications in containers.</p>
-        </div>
-        <div class="slide">
-            <i class="fas fa-network-wired"></i>
-            <h2>Kubernetes</h2>
-            <p>System for automating deployment, scaling, and management of containerized applications.</p>
-        </div>
-        <div class="slide">
-            <i class="fas fa-cloud"></i>
-            <h2>Cloud Infrastructure</h2>
-            <p>Experience with AWS and scalable cloud solutions.</p>
-        </div>
-        <div class="slide">
-            <i class="fas fa-tools"></i>
-            <h2>CI/CD</h2>
-            <p>Implementation of continuous integration and delivery pipelines.</p>
-        </div>
+<div class="wrap page">
+  <section class="hero">
+    <div>
+      <h1>Artemii Fourman</h1>
+      <p class="role">DevOps & Linux Infrastructure Automation Engineer</p>
+      <p class="lead">I automate Linux operations, troubleshoot infrastructure and improve monitoring. My experience spans Intel, OMC Cloud and Compbiz, complemented by hands-on CI/CD and Kubernetes projects in my home lab.</p>
+      <div class="cta">
+        <a class="btn primary" href="#contact" data-go="contact">Get in touch</a>
+        <a class="btn" href="https://www.linkedin.com/in/artemii4man/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/artemii4man" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </div>
-    <div class="slider-controls">
-        <button class="active" onclick="setSlide(0)"></button>
-        <button onclick="setSlide(1)"></button>
-        <button onclick="setSlide(2)"></button>
-        <button onclick="setSlide(3)"></button>
-        <button onclick="setSlide(4)"></button>
+    <div class="pipe" role="img" aria-label="Illustrative home-lab CI/CD pipeline animation, not a live build status">
+      <div class="pipe-h"><span>demo pipeline <span id="runno">#128</span></span><span>main</span></div>
+      <div class="stage"><span class="dot">✓</span><span>commit</span><span class="t">0:02</span></div>
+      <div class="stage"><span class="dot">✓</span><span>build image</span><span class="t">0:41</span></div>
+      <div class="stage"><span class="dot">✓</span><span>HTTP smoke check</span><span class="t">1:12</span></div>
+      <div class="stage"><span class="dot">✓</span><span>publish image</span><span class="t">0:28</span></div>
+      <div class="stage"><span class="dot">✓</span><span>deploy to k8s</span><span class="t">0:35</span></div>
+      <div class="pipe-f">passed: ready for review</div>
     </div>
+  </section>
+
+  <main>
+    <!-- ABOUT -->
+    <section id="about" role="tabpanel" aria-labelledby="t-about" class="active">
+      <h2>About me</h2>
+      <p class="muted" style="max-width:68ch">My background combines production Linux operations, infrastructure automation and customer-facing IT support. At Intel, I worked on server recovery, distributed operational tooling, KVM environments and monitoring improvements. At OMC Cloud and Compbiz, I supported servers, networks and customers. In my personal projects, I have built a working home-lab delivery workflow and configured cross-platform CI with Azure Pipelines.</p>
+      <div class="facts">
+        <div><b>Based in</b>North &amp; Central District, Israel</div>
+        <div><b>Languages</b>Hebrew, English, Russian</div>
+        <div><b>Focus</b>DevOps &amp; Linux infrastructure automation</div>
+        <div><b>Education</b>Computer Science coursework<br>Open University &amp; Braude College, 2020–2024</div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" role="tabpanel" aria-labelledby="t-skills">
+      <h2>Skills</h2>
+      <p class="muted">Professional infrastructure and operations experience, with CI/CD and container skills developed further through personal projects.</p>
+      <div class="skill-group"><h3>Linux & infrastructure</h3><div class="chips"><span class="chip">SUSE</span><span class="chip">Ubuntu</span><span class="chip">CentOS</span><span class="chip">Debian</span><span class="chip">KVM</span><span class="chip">VMware vSphere</span><span class="chip">Cobbler / PXE</span><span class="chip">CFEngine</span><span class="chip">NFS / LDAP client troubleshooting</span></div></div>
+      <div class="skill-group"><h3>Automation & monitoring</h3><div class="chips"><span class="chip">Bash</span><span class="chip">Python</span><span class="chip">PowerShell</span><span class="chip">Git</span><span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Nagios</span></div></div>
+      <div class="skill-group"><h3>IT systems & networking</h3><div class="chips"><span class="chip">Windows Server</span><span class="chip">Active Directory</span><span class="chip">Group Policy</span><span class="chip">Microsoft Entra / MFA</span><span class="chip">FortiGate</span><span class="chip">VPN / VLAN</span><span class="chip">DNS / DHCP</span></div></div>
+      <div class="skill-group"><h3>Personal projects & labs</h3><div class="chips"><span class="chip">Docker / Compose</span><span class="chip">Kubernetes / k3s</span><span class="chip">Jenkins</span><span class="chip">ArgoCD</span><span class="chip">Self-hosted GitLab</span><span class="chip">Azure Pipelines</span><span class="chip">Azure Repos</span><span class="chip">Docker Hub</span><span class="chip">Hyper-V / VirtualBox</span><span class="chip">LVM / software RAID</span></div></div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" role="tabpanel" aria-labelledby="t-experience">
+      <h2>Experience</h2>
+      <ol class="timeline">
+        <li><h3>Compbiz — IT Infrastructure & Helpdesk Support</h3><div class="when">Jun 2026 – Aug 2026</div><ul><li>Resolved approximately 10–15 support requests daily, most independently, across Windows servers, identity, networking and remote access.</li><li>Administered Active Directory, Group Policy and Microsoft Entra/MFA; configured firewall rules, NAT, VPNs, VLANs, DHCP and DNS.</li><li>Developed operational scripts for conditional terminal-server reboots and backup-drive connection and safe removal.</li><li>Coordinated a working server-access and shared-folder solution for a four-person customer department, with documentation and handover.</li></ul></li>
+        <li><h3>Military reserve service & technical upskilling</h3><div class="when">Jan 2024 – Jun 2026</div><ul><li>Combined several months of reserve duty with independent technical projects during this period.</li><li>Completed a home-lab CI/CD workflow using GitLab, Jenkins, a container registry, ArgoCD and k3s.</li><li>Configured and troubleshot Azure Pipelines CI for a Python sample application on Windows and Ubuntu, publishing images to Docker Hub.</li></ul></li>
+        <li><h3>Intel Corporation — Linux Infrastructure & Automation</h3><div class="when">Nov 2021 – Feb 2024</div><ul><li>Supported production SUSE and Ubuntu systems, including boot recovery, networking, storage and provisioning troubleshooting.</li><li>Developed operational automation for validation, remediation and reporting; distributed execution and report collection covered approximately 50,000 machines in 5–10 minutes.</li><li>Worked on configuration, maintenance readiness and recovery checks across 200+ KVM hosts and 2,000+ guest VMs.</li><li>Helped reduce total alerts by approximately 15% over six months through power-control and storage-monitoring fixes.</li><li>Handled 1,000+ incidents and planned-work tickets over the tenure, and documented automation with team walkthroughs.</li></ul></li>
+        <li><h3>OMC Cloud — NOC & Systems Operations</h3><div class="when">Oct 2020 – Oct 2021</div><ul><li>Troubleshot Linux, FreeBSD and Windows VPS environments, recovered services and supported customers during independent night coverage.</li><li>Configured Nagios monitoring, agents and custom checks; developed Bash scanning modules and Python reporting automation.</li><li>Reduced diagnostic check time from approximately 10 to 4 minutes and helped reduce recurring alerts by approximately 10–15%.</li><li>Performed VMware VM migrations, disk and snapshot operations; wrote dozens of runbooks and trained approximately 10 colleagues.</li></ul></li>
+      </ol>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" role="tabpanel" aria-labelledby="t-projects">
+      <h2>Personal projects</h2>
+      <p class="muted">Hands-on lab work alongside my professional infrastructure experience.</p>
+      <div class="grid">
+        <article class="card"><h3>Home-lab CI/CD & Kubernetes</h3><p>Built a delivery workflow in which GitLab webhooks triggered Jenkins builds, HTTP smoke checks and image publication. Used ArgoCD and a three-VM k3s cluster to deploy updates, verifying pod replacement and application behavior.</p><div class="tags"><span>GitLab</span><span>Jenkins</span><span>k3s</span><span>ArgoCD</span></div></article>
+        <article class="card"><h3>Cross-platform Azure CI</h3><p>Configured stage dependencies, parallel jobs and artifact reuse for a Python sample application on Windows and Ubuntu, publishing versioned images to Docker Hub. My contribution focused on CI integration, troubleshooting and a pipeline diagram; the sample app and tests were AI-generated.</p><div class="tags"><span>Azure Pipelines</span><span>Azure Repos</span><span>Docker Hub</span></div></article>
+        <article class="card"><h3>Containerized Python & MongoDB app</h3><p>Connected a Python application to MongoDB to save and retrieve an editable value. Used Docker Compose, a custom Nginx-based image and persistent storage mappings; supplied database credentials through Kubernetes Secrets in the cluster.</p><div class="tags"><span>Docker Compose</span><span>Python</span><span>MongoDB</span><span>Kubernetes Secrets</span></div></article>
+        <article class="card"><h3>Virtualization & storage labs</h3><p>Practiced virtual-machine creation, disk images, LVM, software RAID and virtual networking using Hyper-V, VirtualBox and WSL. Created preconfigured golden images for repeatable VM setup.</p><div class="tags"><span>Hyper-V</span><span>VirtualBox</span><span>WSL</span><span>LVM</span></div></article>
+      </div>
+      <p><a class="btn" href="https://github.com/artemii4man" target="_blank" rel="noopener">Visit my GitHub profile</a></p>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" role="tabpanel" aria-labelledby="t-contact">
+      <h2>Contact</h2>
+      <p class="muted" style="max-width:56ch">Get in touch about DevOps, Linux infrastructure and automation opportunities.</p>
+      <div class="contact-list">
+        <a class="btn" href="mailto:artemii4man@gmail.com"><span>artemii4man@gmail.com</span><span class="muted">Email me</span></a>
+        <button class="btn" id="copy" type="button"><span>artemii4man@gmail.com</span><span id="copy-msg" aria-live="polite">Copy email</span></button>
+        <a class="btn" href="https://www.linkedin.com/in/artemii4man/" target="_blank" rel="noopener"><span>LinkedIn</span><span class="muted">/in/artemii4man</span></a>
+        <a class="btn" href="https://github.com/artemii4man" target="_blank" rel="noopener"><span>GitHub</span><span class="muted">/artemii4man</span></a>
+      </div>
+    </section>
+  </main>
 </div>
 
-<div class="footer">
-    <p>Ready to collaborate? Get in touch with me:</p>
-    <button>Resume</button>
-    <button>View LinkedIn</button>
-    <button>Contact Me</button>
-</div>
+<footer><div class="wrap">© <span id="year">2026</span> Artemii Fourman. Built with plain HTML, CSS and JavaScript, hosted on GitHub Pages.</div></footer>
 
 <script>
-    let currentSlide = 0;
-    const slides = document.querySelector('#slides');
-    const buttons = document.querySelectorAll('.slider-controls button');
-    const totalSlides = document.querySelectorAll('.slide').length;
-
-    function setSlide(index) {
-        currentSlide = index;
-        slides.style.transform = `translateX(-${index * 100}%)`;
-        buttons.forEach(btn => btn.classList.remove('active'));
-        buttons[index].classList.add('active');
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  var panels=[].slice.call(document.querySelectorAll('[role=tabpanel]'));
+  var nav=document.querySelector('nav'),head=document.querySelector('header');
+  function show(id,focus,jump){
+    if(!panels.some(function(p){return p.id===id;}))id='about';
+    tabs.forEach(function(t){
+      var on=t.getAttribute('aria-controls')===id;
+      t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;
+      if(on){
+        if(focus)t.focus({preventScroll:true});
+        nav.scrollTo({left:t.offsetLeft-(nav.clientWidth-t.offsetWidth)/2,behavior:'smooth'});
+      }
+    });
+    panels.forEach(function(p){p.classList.toggle('active',p.id===id);});
+    if(location.hash!=='#'+id)history.replaceState(null,'','#'+id);
+    if(jump){ // 1: only if the new tab's start is above the screen; 2: always align it under the header
+      var top=document.getElementById(id).getBoundingClientRect().top-head.offsetHeight;
+      if(jump===2||top<0)window.scrollBy({top:top});
     }
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(t.getAttribute('aria-controls'),false,1);});
+    t.addEventListener('keydown',function(e){
+      var n=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:null;
+      if(n===null)return;e.preventDefault();
+      show(tabs[(n+tabs.length)%tabs.length].getAttribute('aria-controls'),true,1);
+    });
+  });
+  document.querySelectorAll('[data-go]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();show(a.dataset.go,false,2);});});
+  document.querySelector('.brand').addEventListener('click',function(e){e.preventDefault();show('about');window.scrollTo({top:0});});
+  show((location.hash||'#about').slice(1));
+  window.addEventListener('hashchange',function(){show(location.hash.slice(1),false,1);});
 
-    setInterval(() => {
-        currentSlide = (currentSlide + 1) % totalSlides;
-        setSlide(currentSlide);
-    }, 3000);
+  // pipeline: runs stage by stage, shows "passed", pauses, then starts a new run forever
+  var pipe=document.querySelector('.pipe');
+  if(pipe&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    var st=[].slice.call(pipe.querySelectorAll('.stage')),no=document.getElementById('runno'),n=127,len=[700,1100,1500,900,1000];
+    pipe.classList.add('js');
+    (function cycle(){
+      pipe.classList.remove('ok');
+      st.forEach(function(x){x.className='stage';});
+      no.textContent='#'+(++n);
+      var t=600;
+      st.forEach(function(x,i){
+        setTimeout(function(){x.className='stage run';},t);
+        t+=len[i];
+        setTimeout(function(){x.className='stage done';},t);
+      });
+      setTimeout(function(){pipe.classList.add('ok');},t+150);
+      setTimeout(cycle,t+3200);
+    })();
+  }
+
+  // theme (dark by default, remembered per browser)
+  var root=document.documentElement,btn=document.getElementById('theme');
+  function setTheme(t){root.dataset.theme=t;btn.textContent=t==='dark'?'☾':'☀';btn.setAttribute('aria-label','Switch to '+(t==='dark'?'light':'dark')+' theme');}
+  var saved=null;try{saved=localStorage.getItem('theme');}catch(e){}
+  setTheme(saved||'dark');
+  btn.addEventListener('click',function(){var t=root.dataset.theme==='dark'?'light':'dark';setTheme(t);try{localStorage.setItem('theme',t);}catch(e){}});
+
+  // copy email
+  var c=document.getElementById('copy'),m=document.getElementById('copy-msg');
+  c.addEventListener('click',function(){
+    var mail=c.firstElementChild.textContent;
+    (navigator.clipboard?navigator.clipboard.writeText(mail):Promise.reject()).then(function(){m.textContent='Copied';},function(){location.href='mailto:'+mail;});
+    setTimeout(function(){m.textContent='Copy email';},2000);
+  });
+  document.getElementById('year').textContent=new Date().getFullYear();
+})();
 </script>
-
 </body>
 </html>
